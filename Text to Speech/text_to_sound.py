@@ -34,6 +34,8 @@ def sound_strip_from_text(context, text, pitch, start_frame, voice, audio_channe
     for char in tmp_ident:
         if char in not_allowed:
             pass
+        elif len((text_ident + char).encode()) >= 45: # If the text_ident is longer than 45bytes, it will give up adding charactors.
+            break
         else:
             text_ident += char
 
