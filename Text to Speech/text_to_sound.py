@@ -11,7 +11,7 @@ import string
 import subprocess
 
 """ for VOICEVOX """
-voicevox = True
+from . import voicevox
 import urllib
 
 not_allowed = ['/', '"', '\'']
@@ -32,14 +32,14 @@ def engine(_text, _voice, _rate, _path):
     engine.runAndWait()
 
 def engine_voicevox(_text, _voice, _rate, _path):
-    subprocess.run(["curl", "-X", "POST", f"http://localhost:50021/audio_query?text={urllib.parse.quote(_text)}&speaker=3",\
+    subprocess.run(["curl", "-X", "POST", f"http://localhost:50021/audio_query?text={urllib.parse.quote(_text)}&speaker={_voice}",\
         "-o", _path + ".json",\
     ])
-    print(subprocess.run(["curl", "-X", "POST", "http://localhost:50021/synthesis?speaker=3",\
+    subprocess.run(["curl", "-X", "POST", f"http://localhost:50021/synthesis?speaker={_voice}",\
         "-H", "Content-Type: application/json",\
         "-d", "@" + _path + ".json",\
         "-o", _path,\
-    ]))
+    ])
 
 def sound_strip_from_text(context, text, pitch, start_frame, voice, audio_channel, rate):
     tmp_ident = text[0:45]
@@ -60,7 +60,7 @@ def sound_strip_from_text(context, text, pitch, start_frame, voice, audio_channe
     identifier = f"{text_ident}{time_now}"
     output_name = os.path.join(filepath_full, identifier + ".wav" if voicevox else ".aiff")
 
-    if voicevox:
+    if voicevox.enabled:
         engine_voicevox(text, voice, rate, output_name)
     elif sys.platform == "darwin":
         mac_engine(text, voice, rate, output_name)

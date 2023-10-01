@@ -2,11 +2,21 @@ import bpy
 from sys import platform
 import importlib
 
+""" for VOICEVOX """
+from . import voicevox
+
 class TextToSpeechSettings(bpy.types.PropertyGroup):
     persistent_string : bpy.props.StringProperty(name='Persistent String')
     string_field : bpy.props.StringProperty(name='Text')
 
-    if platform == "darwin":
+    if voicevox.enabled:
+        importlib.reload(voicevox)
+        voice_enumerator : bpy.props.EnumProperty(
+            name = "",
+            description = "gender options",
+            items= voicevox.voices)
+
+    elif platform == "darwin":
         from .voices import osx
         importlib.reload(osx)
         voice_enumerator : bpy.props.EnumProperty(
