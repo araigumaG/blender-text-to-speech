@@ -43,3 +43,4 @@ class Caption():
         self.start_time.frame_to_time(self.sound_strip.frame_start)
         self.end_time.frame_to_time(self.sound_strip.frame_final_end)
         self.frame_start = self.sound_strip.frame_start
+    
